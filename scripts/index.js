@@ -22,7 +22,6 @@ function addCard(cardContent, deleteElement) {             // функция с�
     deleteButton.addEventListener('click', () => {deleteElement(cardElement)});
 
     return cardElement;
-    
 };
 
 function deleteCard(cardElement) {      // функция удаление карточек
@@ -34,7 +33,7 @@ for (let i = 0; i <= initialCards.length; i++) {         // добавляем �
     placesList.append(card);
  }; 
  
- 
+
  /*
  initialCards.forEach(function(cardContent) {         // добавляем карточки на страницу методом forEach
     const card = addCard(cardContent, deleteCard);
