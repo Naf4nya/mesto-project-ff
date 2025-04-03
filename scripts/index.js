@@ -1,10 +1,11 @@
 const container = document.querySelector('.content');
 const placesList = container.querySelector('.places__list');
  
-function deleteCard() {
-    const card = document.querySelector('.card')
-    card.remove();
-};
+
+
+
+
+
 
 function addCard(cardContent, deleteElement) {             // функция создание карточек
         
@@ -19,24 +20,21 @@ function addCard(cardContent, deleteElement) {             // функция с�
     cardTitle.textContent = cardContent.name;
 
     const deleteButton = cardElement.querySelector('.card__delete-button');
-    deleteButton.addEventListener('click', () => {deleteElement(cardElement)});
+    deleteButton.addEventListener('click', (evt) => {
+        deleteCard(evt);
+    });
 
     return cardElement;
 };
 
-function deleteCard(cardElement) {      // функция удаление карточек
-    cardElement.remove();
-}
 
-for (let i = 0; i <= initialCards.length; i++) {         // добавляем карточки на страницу циклом
-    const card = addCard(initialCards[i], deleteCard);
-    placesList.append(card);
- }; 
- 
+function deleteCard(evt) {                                      // функция удаления карточек
+    const card = evt.target.closest('.card');
+    card.remove();
+ };
 
- /*
+
  initialCards.forEach(function(cardContent) {         // добавляем карточки на страницу методом forEach
     const card = addCard(cardContent, deleteCard);
     placesList.append(card);
- }) 
-    */
+ });
