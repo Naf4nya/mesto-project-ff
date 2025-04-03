@@ -1,12 +1,6 @@
 const container = document.querySelector('.content');
 const placesList = container.querySelector('.places__list');
  
-
-
-
-
-
-
 function addCard(cardContent, deleteElement) {             // функция создание карточек
         
     const cardTemplate = document.querySelector('#card-template').content;
