@@ -1,25 +1,21 @@
-import { openPopup, closePopup } from "./modal.js"
-
-
-function addCard(cardContent, deleteElement, eventsElement, likeElement) {             // функция создание карточек
-        
-  const cardTemplate = document.querySelector('#card-template').content;
+const cardTemplate = document.querySelector('#card-template').content;
+ 
+// функция создание карточек
+function createCard(cardContent, deleteElement, likeElement) {    
   const cardElement = cardTemplate.querySelector('.card').cloneNode(true);
-
   const cardImage = cardElement.querySelector('.card__image');
+  const cardTitle = cardElement.querySelector('.card__title');
+  const deleteButton = cardElement.querySelector('.card__delete-button');  
+
   cardImage.src = cardContent.link;
   cardImage.alt = cardContent.name;
-
-  const cardTitle = cardElement.querySelector('.card__title');
   cardTitle.textContent = cardContent.name;
 
-  const deleteButton = cardElement.querySelector('.card__delete-button');
   deleteButton.addEventListener('click', (evt) => {
       deleteCard(evt);
   });
 
   cardElement.addEventListener('click', (evt) => {
-      eventPopupCard(evt);
       likeCard(evt);
   });
 
@@ -37,19 +33,4 @@ function likeCard(evt) {                                           // функц
   };
 };
 
-function eventPopupCard(evt) {                                     // функция клика по карточки
-  const cardPopup = document.querySelector('.popup_type_image');
-  const cardImage = evt.target.closest('.card__image');
-  const popupImage = cardPopup.querySelector('.popup__image');
-  const popupCaption = cardPopup.querySelector('.popup__caption');
-
-  if (evt.target.classList.contains('card__image')) {
-  popupImage.src = cardImage.src;
-  popupImage.alt = cardImage.alt;
-  popupCaption.textContent = cardImage.alt;
-  openPopup(cardPopup);
-  }
-
-};
-
-export { addCard as createCard, likeCard, deleteCard, eventPopupCard };
+export { createCard, likeCard, deleteCard };
