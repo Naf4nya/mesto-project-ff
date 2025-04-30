@@ -1,5 +1,5 @@
 
-import { createCard, deleteCard, likeCard } from "../components/card.js";
+import { createCard } from "../components/card.js";
 import { openPopup, closePopup } from "../components/modal.js";
 import { initialCards } from "./cards.js";
 import "../pages/index.css";
@@ -32,8 +32,6 @@ const profileDescription = document.querySelector('.profile__description');
 const editProfileForm = document.forms['edit-profile'];
 const nameInput = editProfileForm.elements.name;
 const jobInput = editProfileForm.elements.description;
-nameInput.value = profileTitle.textContent;
-jobInput.value = profileDescription.textContent;
 
 // функция для заполнения формы изменения профиля из кода страницы
 function editFormSubmit(evt) {                                               
@@ -44,6 +42,14 @@ function editFormSubmit(evt) {
     closePopup(editPopup);
 }
 
+// функция открытия попапа карточки
+function openImagePopup(data) {
+    imageInPopupTypeImage.src = data.link;
+    imageInPopupTypeImage.alt = data.name;
+    captionInPopupTypeImage.textContent = data.name;
+    openPopup(popupTypeImage);
+  }
+
 // функция события сохранения новой карточки
 function newPlaceFormSubmit(evt) {
     evt.preventDefault();
@@ -52,14 +58,19 @@ function newPlaceFormSubmit(evt) {
         name: inputNameFormNewPlace.value,
         link: inputLinkFormNewPlace.value
     }
-    const newCard = createCard(card, deleteCard, likeCard);
+    const newCard = createCard(card, openImagePopup);
     placesList.prepend(newCard);
     formPlace.reset();
     closePopup(newCardPopup);
 }
 
 // обработка событий
-editButton.addEventListener('click', () => openPopup(editPopup) );
+editButton.addEventListener('click', () => {
+    nameInput.value = profileTitle.textContent;
+    jobInput.value = profileDescription.textContent;
+    openPopup(editPopup) 
+});
+
 addButton.addEventListener('click', () => {
     openPopup(newCardPopup);
     formPlace.reset();
@@ -72,23 +83,10 @@ closeButtons.forEach(button => {
     });
 });
 
-placesList.addEventListener('click', function(evt) {                                     // функция клика по карточки
-    const cardImage = evt.target.closest('.card__image');
-
-    if (evt.target.classList.contains('card__image')) {
-    imageInPopupTypeImage.src = cardImage.src;
-    imageInPopupTypeImage.alt = cardImage.alt;
-    captionInPopupTypeImage.textContent = cardImage.alt;
-    openPopup(popupTypeImage);
-    }
-  
-  });
-
 formPlace.addEventListener('submit', newPlaceFormSubmit);
 editProfileForm.addEventListener('submit', editFormSubmit);
 
-
 initialCards.forEach(cardContent => {
-    const card = createCard(cardContent, deleteCard, likeCard);
+    const card = createCard(cardContent, openImagePopup);
     placesList.append(card);
   });
