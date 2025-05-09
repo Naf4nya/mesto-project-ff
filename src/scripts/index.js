@@ -1,7 +1,7 @@
 import { createCard } from "../components/card.js";
 import { openPopup, closePopup } from "../components/modal.js";
 import { safeServerEditProfile, safeServerNewProfileAvatar, addNewCardToServer, promises } from "../components/api.js";
-import { enabledValidation, clearValidation } from "../components/valid.js";
+import { enabledValidation, clearValidation } from "../components/validation.js";
 import "../pages/index.css";
 
 const container = document.querySelector('.content');
@@ -44,30 +44,43 @@ const validationConfig = {
     errorClass: 'popup__error_visible',
 };
 
-// функция для заполнения формы изменения профиля из кода страницы
+// функция для заполнения формы изменения профиля
 function editFormSubmit(evt) {                                               
     evt.preventDefault();
-    profileTitle.textContent = nameInput.value;
-    profileDescription.textContent = jobInput.value;
     renderLoading(true, evt);
-    safeServerEditProfile(profileTitle, profileDescription)
+
+    const title = nameInput.value;
+    const description = jobInput.value;
+
+    safeServerEditProfile(title, description)
+    .then(userData => {
+        profileTitle.textContent = userData.name;
+        profileDescription.textContent = userData.about;
+        closePopup(editPopup);
+    })
     .catch((err) => {console.log(err)})
     .finally(() => {
         renderLoading(false, evt);
     });
-    closePopup(editPopup);
+    
 };
 
 function editProfileImageSubmit(evt) {                                               
     evt.preventDefault();
-    profileAvatar.style.backgroundImage = `url(${linkNewProfileImage.value})`;
     renderLoading(true, evt);
-    safeServerNewProfileAvatar(linkNewProfileImage.value)
+
+    const urlImage = linkNewProfileImage.value;
+    safeServerNewProfileAvatar(urlImage)
+    .then(profileInfo => {
+        profileAvatar.style.backgroundImage = `url(${profileInfo.avatar})`;
+        editProfileImageForm.reset();
+        closePopup(popupTypeProfileImage);
+    })
     .catch((err) => {console.log(err)})
     .finally(() => {
         renderLoading(false, evt);
     });
-    closePopup(popupTypeProfileImage);
+    
 };
 
 
@@ -103,7 +116,7 @@ function newPlaceFormSubmit(evt) {
 function renderLoading (isLoading, evt) {
     const saveButton = evt.target.querySelector('.popup__button');
     if (isLoading) {
-        saveButton.textContent = "Сохранить..."
+        saveButton.textContent = "Сохранение..."
     } else {
         saveButton.textContent = "Сохранить"
     }

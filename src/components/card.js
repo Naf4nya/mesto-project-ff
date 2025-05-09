@@ -1,4 +1,4 @@
-import { deleteCardFromServer, likeCardOnServer, deleteLikeCardOnServer } from "./api.js";
+import { deleteCardFromServer, setLikeOnServer } from "./api.js";
 
 const cardTemplate = document.querySelector('#card-template').content;
  
@@ -28,27 +28,23 @@ function createCard(cardContent, openFullImage, userId) {
   });
 
   deleteButton.addEventListener('click', (evt) => {
-    
-    deleteCard(evt);
-    deleteCardFromServer(cardContent._id);
+    deleteCardFromServer(cardContent._id)
+    .then (() => {
+      deleteCard(evt);
+    })
+    .catch((err) => {console.log(err)});
   });
 
 
 
   likeElement.addEventListener('click', (evt) => {
-    if (evt.target.classList.contains('card__like-button_is-active')) {
-      deleteLikeCardOnServer(cardContent._id)
+    const isLiked = evt.target.classList.contains('card__like-button_is-active');
+      setLikeOnServer(cardContent._id, isLiked)
       .then (res => {
       cardNumberLikes.textContent = res.likes.length;
+      likeCard(evt);
       })
-    } else if (!evt.target.classList.contains('card__like-button_is-active')) { 
-      likeCardOnServer(cardContent._id)
-      .then (res => {
-      cardNumberLikes.textContent = res.likes.length;
-      })
-    }
-    likeCard(evt);
-    
+      .catch((err) => {console.log(err)});
 });
 
   return cardElement;

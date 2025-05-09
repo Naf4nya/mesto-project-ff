@@ -1,5 +1,5 @@
 function openModal(popup) {                                                      // функция открытия попапа
-    popup.classList.add('popup_is-opened', 'popup_is-animated');                 // + добавление анимации
+    popup.classList.add('popup_is-opened' );                 // + добавление анимации
     document.addEventListener('keydown', closeEscModal);
     popup.addEventListener('click', closeOverlayModal);
 
