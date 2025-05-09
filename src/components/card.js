@@ -1,27 +1,55 @@
+import { deleteCardFromServer, likeCardOnServer, deleteLikeCardOnServer } from "./api.js";
 
 const cardTemplate = document.querySelector('#card-template').content;
  
 // функция создание карточек
-function createCard(cardContent, openFullImage) {    
+function createCard(cardContent, openFullImage, userId) {    
   const cardElement = cardTemplate.querySelector('.card').cloneNode(true);
   const cardImage = cardElement.querySelector('.card__image');
   const cardTitle = cardElement.querySelector('.card__title');
   const deleteButton = cardElement.querySelector('.card__delete-button');  
-
+  const cardNumberLikes = cardElement.querySelector('.card__number_like');
+  const likeElement = cardElement.querySelector('.card__like-button');
+  if (cardContent.owner._id !== userId) {
+    deleteButton.remove();
+  }; 
+  
   cardImage.src = cardContent.link;
   cardImage.alt = cardContent.name;
   cardTitle.textContent = cardContent.name;
+  cardNumberLikes.textContent = cardContent.likes.length;
+  const containMyid = Object.values(cardContent.likes).map(user => user._id).some(id => id.includes(userId));
+  if (containMyid) {
+    likeElement.classList.add('card__like-button_is-active');
+  };
+
   cardImage.addEventListener('click', () => {
     openFullImage(cardContent);
   });
 
   deleteButton.addEventListener('click', (evt) => {
-      deleteCard(evt);
+    
+    deleteCard(evt);
+    deleteCardFromServer(cardContent._id);
   });
 
-  cardElement.addEventListener('click', (evt) => {
-      likeCard(evt);
-  });
+
+
+  likeElement.addEventListener('click', (evt) => {
+    if (evt.target.classList.contains('card__like-button_is-active')) {
+      deleteLikeCardOnServer(cardContent._id)
+      .then (res => {
+      cardNumberLikes.textContent = res.likes.length;
+      })
+    } else if (!evt.target.classList.contains('card__like-button_is-active')) { 
+      likeCardOnServer(cardContent._id)
+      .then (res => {
+      cardNumberLikes.textContent = res.likes.length;
+      })
+    }
+    likeCard(evt);
+    
+});
 
   return cardElement;
 };
